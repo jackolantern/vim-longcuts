@@ -1,11 +1,11 @@
 " A minimal snippet framework for Vim.
-" Last Change:	2014 Nov 14
+" Last Change:	2015 Dec 11
 " Maintainer:	John Connor <john.theman.connor@gmail.com>
 " License:	This file is placed in the public domain.
 
 " THANKS IN PART TO: http://www.vim.org/scripts/script.php?script_id=143
 
-function! GetNearestWord()
+function! longcuts#GetNearestWord()
   let c = col ('.')-1
   let l = line('.')
   let ll = getline(l)
@@ -16,23 +16,24 @@ function! GetNearestWord()
   return ll1.ll2
 endfunction
 
-function! BufReplace()
-    let word = GetNearestWord()
+function! longcuts#BufReplace()
+    let word = longcuts#GetNearestWord()
 
-    if matchstr(word, "^\\\S*$") == ""
+    if matchstr(word, '^\S*$') == ""
+        echo "No word under cursor."
         return
     endif
 
-    echo "pass 1"
     let replace = get(g:LongCuts, word, "")
     if replace == ""
+        echo "Not found: " . word
         return
     endif
     
     let c = matchstr(getline('.'), '\%' . col('.') . 'c.')
-    if c == "\\"
-        :execute "normal dwdwi" . replace
+    if c == '\'
+        :execute 'normal! d2wi' . replace
     else
-        :execute "normal ?\<cr>dwdwi" . replace
+        :execute "normal! ?\\\<cr>d2wi" . replace . ' '
     endif
 endfunction
